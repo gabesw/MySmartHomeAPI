@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.shortcuts import redirect
 from rest_framework import routers
 from MySmartHomeAPI.settings import API_VERSION
 from API import views
@@ -29,8 +30,9 @@ router.register(r'kitchen/lights/keep_on', views.KitchenLightViewSet, basename='
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    re_path(r'^$', lambda request: redirect('api/v1/', permanent=False)),
     path(API_URL_PREFIX+'/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
-urlpatterns += router.urls
+# urlpatterns += router.urls
