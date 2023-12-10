@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-95l(*r6aq@4ao!q74u%-pb9@uqclq8h=x!e)yw27m)$zsmcuk5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+API_VERSION = 'v1'
+
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'MySmartHomeAPI-dev.us-east-1.elasticbeanstalk.com',
 ]
 
@@ -40,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'API'
 ]
 
 MIDDLEWARE = [
@@ -124,3 +129,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#REST API Settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

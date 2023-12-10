@@ -16,7 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
+from MySmartHomeAPI.settings import API_VERSION
+from API import views
+API_URL_PREFIX = 'api/' + API_VERSION
+
+router = routers.DefaultRouter()
+# router.register(r'users', views.UserViewSet)
+# router.register(r'groups', views.GroupViewSet)
+# router.register(r'kitchen/lights/keep_on/<int:val>/', )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('api/'+API_VERSION+'/', include(router.urls)),
+    path(API_URL_PREFIX + '/kitchen/lights/keep_on/', views.kitchen_lights_keep_on),
+    path(API_URL_PREFIX +'/kitchen/lights/keep_on/<int:val>/', views.kitchen_lights_keep_on),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
+
+urlpatterns += router.urls
