@@ -23,15 +23,13 @@ from API import views
 API_URL_PREFIX = 'api/' + API_VERSION
 
 router = routers.DefaultRouter()
-# router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UserViewSet)
 # router.register(r'groups', views.GroupViewSet)
-# router.register(r'kitchen/lights/keep_on/<int:val>/', )
+router.register(r'kitchen/lights/keep_on', views.KitchenLightViewSet, basename='kitchen_light')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/'+API_VERSION+'/', include(router.urls)),
-    path(API_URL_PREFIX + '/kitchen/lights/keep_on/', views.kitchen_lights_keep_on),
-    path(API_URL_PREFIX +'/kitchen/lights/keep_on/<int:val>/', views.kitchen_lights_keep_on),
+    path(API_URL_PREFIX+'/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 

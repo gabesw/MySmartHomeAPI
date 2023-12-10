@@ -1,18 +1,18 @@
 from django.contrib.auth.models import Group, User
-from rest_framework import permissions, viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework import mixins, permissions, viewsets, status
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
-from API.serializers import GroupSerializer, UserSerializer
+from API.serializers import GroupSerializer, UserSerializer, KitchenLightSerializer
 from API.models import KitchenKeepOnSwitch
 
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows users to be viewed or edited.
-#     """
-#     queryset = User.objects.all().order_by('-date_joined')
-#     serializer_class = UserSerializer
-#     permission_classes = [permissions.IsAuthenticated]
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 # class GroupViewSet(viewsets.ModelViewSet):
@@ -23,35 +23,69 @@ from API.models import KitchenKeepOnSwitch
 #     serializer_class = GroupSerializer
 #     permission_classes = [permissions.IsAuthenticated]
 
-@api_view(['GET', 'PUT'])
-def kitchen_lights_keep_on(request, val=None):
-    '''
-    View to handle the kitchen lights keep on request. When called with a GET
-    request it returns the value of the switch:
-        0 - do not change light behavior
-        1 - keep lights on
-        2 - keep lights off
-    When called with a POST request it sets the value of the switch to val.
 
-    Parameters:
-        request (request) - the request object
-        val (int) - the value to set the switch to
-    '''
-    light_switch = None
-    try:
-        light_switch = KitchenKeepOnSwitch.get_instance()
-    except Exception as e:
-        return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    if request.method == 'GET':
-        return Response({'status': 'ok', 'state': light_switch.val}, status=status.HTTP_200_OK)
-    elif request.method == 'PUT':
-        if val is not None:
-            # Update the light state
-            light_switch.val = val
-            light_switch.save()
-            return Response({'status': 'No Content'}, status=status.HTTP_204_NO_CONTENT)
+class KitchenLightViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """
+    A viewset for viewing and updating the state of the kitchen lights.
+
+    The kitchen lights can be in one of the following states:
+    - 0: Do not change light behavior
+    - 1: Keep lights on
+    - 2: Keep lights off
+
+    This viewset provides two main HTTP methods:
+    - GET: To retrieve the current state of the kitchen lights.
+    - PUT: To update the state of the kitchen lights.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]  # Add your desired permissions
+    queryset = KitchenKeepOnSwitch.objects.all()
+    serializer_class = KitchenLightSerializer
+
+    def get_object(self):
+        """
+        Returns the singleton instance of the kitchen light.
+        Overridden to handle singleton pattern.
+        """
+        return KitchenKeepOnSwitch.get_instance()
+
+    def list(self, request):
+        """
+        Handle GET requests for the kitchen light's state.
+
+        Returns a response with the current state of the kitchen lights.
+        """
+        light_switch = self.get_object()
+        serializer = KitchenLightSerializer(light_switch)
+        #return Response({'status': 'ok', 'state': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.data)
+    
+    # def retrieve(self, request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
+    
+    # @action(detail=False, methods=['put'])
+    # def set_state(self, request, *args, **kwargs):
+    #     """
+    #     Handle PUT requests to update the kitchen light's state.
+    #     ...
+    #     """
+    #     return self.update(request, *args, **kwargs)
+    
+    def put(self, request, pk=None):
+        """
+        Update the state of the kitchen light.
+        Overridden to handle singleton pattern.
+        """
+        light_switch = self.get_object()
+        serializer = self.get_serializer(light_switch, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         else:
-            # Handle case where 'val' is not provided
-            return Response({'status': 'error', 'message': 'No value provided'}, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return Response({'status': 'not ok'})
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get_view_name(self):
+        """
+        Returns a more descriptive name for the browsable API.
+        """
+        return "Kitchen Light Switch"
