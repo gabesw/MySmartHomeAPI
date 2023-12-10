@@ -21,6 +21,12 @@ from django.shortcuts import redirect
 from rest_framework import routers
 from MySmartHomeAPI.settings import API_VERSION
 from API import views
+from rest_framework.authtoken import views as auth_views
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+
+for user in User.objects.all():
+    Token.objects.get_or_create(user=user)
 API_URL_PREFIX = 'api/' + API_VERSION
 
 router = routers.DefaultRouter()
@@ -32,6 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^$', lambda request: redirect('api/v1/', permanent=False)),
     path(API_URL_PREFIX+'/', include(router.urls)),
+    path(API_URL_PREFIX+'/api-token-auth/', auth_views.obtain_auth_token),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
