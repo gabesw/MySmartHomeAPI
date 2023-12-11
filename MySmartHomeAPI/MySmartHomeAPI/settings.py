@@ -32,6 +32,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'MySmartHomeAPI-dev.us-east-1.elasticbeanstalk.com',
+    'mysmarthome.software',
+    'www.mysmarthome.software',
 ]
 
 
@@ -44,6 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
     'rest_framework',
     'rest_framework.authtoken',
     'API'
