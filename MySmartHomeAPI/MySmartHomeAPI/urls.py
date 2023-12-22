@@ -24,7 +24,6 @@ from API import views
 from rest_framework.authtoken import views as auth_views
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.http import HttpResponse
 
 for user in User.objects.all():
     Token.objects.get_or_create(user=user)
