@@ -33,6 +33,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 # router.register(r'groups', views.GroupViewSet)
 router.register(r'kitchen/lights/keep_on', views.KitchenLightViewSet, basename='kitchen_light')
+router.register(r'variables/good_morning', views.GoodMorningViewSet, basename='good_morning')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

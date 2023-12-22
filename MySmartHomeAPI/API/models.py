@@ -26,8 +26,38 @@ class BehaviourSwitch(models.Model):
     class Meta:
         abstract = True
 
+class GlobalVar(models.Model):
+    '''
+    Model to represent a simple global variable.
+    '''
+    val = models.IntegerField(default=0)
+
+    # ensure singleton
+    def save(self, *args, **kwargs):
+        if not self.pk and GlobalVar.objects.exists():
+            # If trying to save a new instance and an instance already exists, raise an error
+            raise Exception("An instance of this variable already exists.")
+        return super(GlobalVar, self).save(*args, **kwargs)
+    
+    @classmethod
+    def get_instance(cls):
+        '''
+        Getter for singleton instance
+        '''
+        instance, created = cls.objects.get_or_create(pk=1)
+        return instance
+    
+    class Meta:
+        abstract = True
+
 class KitchenKeepOnSwitch(BehaviourSwitch):
     '''
     Model to represent the switch that controls the 'keep-on' behaviour of the kitchen lights.
+    '''
+    pass
+
+class GoodMorningVariable(BehaviourSwitch):
+    '''
+    Model to represent the weather the 'good morning' routine has been run.
     '''
     pass
