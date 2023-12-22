@@ -40,6 +40,8 @@ urlpatterns = [
     path(API_URL_PREFIX+'/', include(router.urls)),
     path(API_URL_PREFIX+'/api-token-auth/', auth_views.obtain_auth_token),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('health/', include('health_check.urls')),
+    
 ]
 
 # urlpatterns += router.urls
