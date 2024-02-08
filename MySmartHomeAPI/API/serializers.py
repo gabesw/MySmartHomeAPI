@@ -32,8 +32,8 @@ class KitchenLightSerializer(serializers.ModelSerializer):
         """
         Check that the val is between 0 and 2.
         """
-        if not (0 <= value <= 2):
-            raise serializers.ValidationError("Value must be between 0 and 2.")
+        if not (0 <= value <= 3):
+            raise serializers.ValidationError("Value must be between 0 and 3.")
         return value
     
 class GoodMorningSerializer(serializers.ModelSerializer):

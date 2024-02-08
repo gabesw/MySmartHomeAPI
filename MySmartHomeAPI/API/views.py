@@ -32,6 +32,7 @@ class KitchenLightViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewse
     - 0: Do not change light behavior
     - 1: Keep lights on
     - 2: Keep lights off
+    - 3: Follow-Me mode
 
     This viewset provides two main HTTP methods:
     - GET: To retrieve the current state of the kitchen lights.
