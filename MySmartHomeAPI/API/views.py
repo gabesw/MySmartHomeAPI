@@ -2,8 +2,8 @@ from django.contrib.auth.models import Group, User
 from rest_framework import mixins, permissions, viewsets, status
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
-from API.serializers import GroupSerializer, UserSerializer, KitchenLightSerializer, GoodMorningSerializer
-from API.models import KitchenKeepOnSwitch, GoodMorningVariable
+from API.serializers import GroupSerializer, UserSerializer, KitchenLightSerializer
+from API.models import KitchenKeepOnSwitch
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -90,56 +90,3 @@ class KitchenLightViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewse
         Returns a more descriptive name for the browsable API.
         """
         return "Kitchen Light Switch"
-    
-class GoodMorningViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    """
-    A viewset for keeping track of the 'good morning' state.
-
-    Allowed states:
-    - 0: (False) Routine has not been run
-    - 1: (True) Routine has been run
-
-    This viewset provides two main HTTP methods:
-    - GET: To retrieve the current state of the variable.
-    - PUT: To update the variable.
-    """
-
-    permission_classes = [permissions.IsAuthenticated]  # Add your desired permissions
-    queryset = GoodMorningVariable.objects.all()
-    serializer_class = GoodMorningSerializer
-
-    def get_object(self):
-        """
-        Returns the singleton instance of the kitchen light.
-        Overridden to handle singleton pattern.
-        """
-        return GoodMorningVariable.get_instance()
-
-    def list(self, request):
-        """
-        Handle GET requests for the kitchen light's state.
-
-        Returns a response with the current state of the kitchen lights.
-        """
-        variable = self.get_object()
-        serializer = GoodMorningSerializer(variable)
-        return Response(serializer.data)
-    
-    def put(self, request, pk=None):
-        """
-        Update the state of the variable.
-        Overridden to handle singleton pattern.
-        """
-        variable = self.get_object()
-        serializer = self.get_serializer(variable, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def get_view_name(self):
-        """
-        Returns a more descriptive name for the browsable API.
-        """
-        return "\'Good Morning\' State"
