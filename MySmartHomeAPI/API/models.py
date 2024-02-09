@@ -55,9 +55,3 @@ class KitchenKeepOnSwitch(BehaviourSwitch):
     Model to represent the switch that controls the 'keep-on' behaviour of the kitchen lights.
     '''
     pass
-
-class GoodMorningVariable(BehaviourSwitch):
-    '''
-    Model to represent the weather the 'good morning' routine has been run.
-    '''
-    pass
