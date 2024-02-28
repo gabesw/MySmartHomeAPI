@@ -26,8 +26,9 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from API.global_var import addVarsToRouter
 
-for user in User.objects.all():
-    Token.objects.get_or_create(user=user)
+# for user in User.objects.all():
+#     Token.objects.get_or_create(user=user)
+
 API_URL_PREFIX = 'api/' + API_VERSION
 
 # global_var_router = get_router()

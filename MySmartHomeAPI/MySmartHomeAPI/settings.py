@@ -36,6 +36,7 @@ API_VERSION = 'v1'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '192.168.2.248',
     'MySmartHomeAPI-dev.us-east-1.elasticbeanstalk.com',
     'mysmarthome.software',
     'www.mysmarthome.software',
